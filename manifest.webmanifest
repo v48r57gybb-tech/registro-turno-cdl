@@ -1,0 +1,16 @@
+{
+  "name": "Registro turno Centri Di Lavoro",
+  "short_name": "Registro CDL",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#081522",
+  "theme_color": "#1f7a4d",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

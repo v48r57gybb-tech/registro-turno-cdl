@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="55%" r="75%">
+      <stop offset="0%" stop-color="#17334D"/>
+      <stop offset="100%" stop-color="#081522"/>
+    </radialGradient>
+    <radialGradient id="fireGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF7A18" stop-opacity="0.55"/>
+      <stop offset="60%" stop-color="#E64A19" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#E64A19" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="frontGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E6EDF3"/>
+      <stop offset="100%" stop-color="#A7B8C6"/>
+    </linearGradient>
+    <linearGradient id="sideGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8FA3B3"/>
+      <stop offset="100%" stop-color="#5D7486"/>
+    </linearGradient>
+    <linearGradient id="glassGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1B3A52"/>
+      <stop offset="100%" stop-color="#0E2233"/>
+    </linearGradient>
+    <linearGradient id="flameOuter" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#E64A19"/>
+      <stop offset="100%" stop-color="#FF7A18"/>
+    </linearGradient>
+    <linearGradient id="flameMid" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#FF7A18"/>
+      <stop offset="100%" stop-color="#FFD34D"/>
+    </linearGradient>
+    <linearGradient id="roofHot" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FF9A3D"/>
+      <stop offset="100%" stop-color="#DBE4EB"/>
+    </linearGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="10"/>
+    </filter>
+  </defs>
+  <g id="background"><rect width="1024" height="1024" fill="url(#bgGrad)"/></g>
+  <g id="ground-shadow"><ellipse cx="512" cy="845" rx="330" ry="42" fill="#04101B" opacity="0.75" filter="url(#soft)"/></g>
+  <g id="fire-glow"><ellipse cx="505" cy="330" rx="300" ry="220" fill="url(#fireGlow)"/></g>
+  <g id="flames-back">
+    <path d="M330 430 C300 360 340 320 320 250 C360 290 380 330 375 380 C400 330 420 300 415 230 C450 290 460 350 450 420 Z" fill="url(#flameOuter)" opacity="0.95"/>
+    <path d="M640 430 C680 370 650 320 680 250 C640 290 620 330 630 380 C610 330 590 300 600 230 C570 290 560 350 575 420 Z" fill="url(#flameOuter)" opacity="0.95"/>
+    <path d="M480 420 C450 330 500 280 480 180 C530 250 550 320 540 400 C570 340 590 300 585 210 C620 290 620 370 600 430 Z" fill="url(#flameOuter)"/>
+    <path d="M500 420 C480 350 515 310 500 230 C540 290 555 350 545 410 Z" fill="url(#flameMid)"/>
+    <path d="M345 420 C330 370 355 340 345 290 C375 330 385 370 378 415 Z" fill="url(#flameMid)" opacity="0.9"/>
+    <path d="M655 420 C670 370 645 340 660 290 C630 330 620 370 628 415 Z" fill="url(#flameMid)" opacity="0.9"/>
+  </g>
+  <g id="machine-body">
+    <path d="M200 760 L660 760 L700 800 L240 800 Z" fill="#102B40"/>
+    <rect x="240" y="795" width="460" height="40" rx="10" fill="#0B2233"/>
+    <path d="M660 400 L840 430 L840 770 L660 760 Z" fill="url(#sideGrad)"/>
+    <path d="M220 400 L660 400 L840 430 L400 430 Z" fill="#C3D2DD"/>
+    <path d="M220 400 L660 400 L660 430 L220 430 Z" fill="url(#roofHot)"/>
+    <rect x="220" y="430" width="440" height="335" rx="18" fill="url(#frontGrad)"/>
+    <rect x="220" y="430" width="440" height="335" rx="18" fill="none" stroke="#102B40" stroke-width="10"/>
+    <rect x="220" y="700" width="440" height="26" fill="#22C5DC" opacity="0.85"/>
+    <rect x="250" y="800" width="40" height="30" rx="8" fill="#0B2233"/>
+    <rect x="640" y="800" width="40" height="30" rx="8" fill="#0B2233"/>
+  </g>
+  <g id="machine-window">
+    <rect x="280" y="480" width="320" height="200" rx="22" fill="#102B40"/>
+    <rect x="300" y="500" width="280" height="160" rx="14" fill="url(#glassGrad)"/>
+    <rect x="330" y="610" width="220" height="26" rx="6" fill="#3E5A70"/>
+    <rect x="400" y="585" width="80" height="25" rx="4" fill="#7C93A6"/>
+    <path d="M320 660 L420 500 L470 500 L370 660 Z" fill="#FFFFFF" opacity="0.08"/>
+    <path d="M430 660 L530 500 L560 500 L460 660 Z" fill="#FFFFFF" opacity="0.06"/>
+    <rect x="612" y="540" width="14" height="90" rx="7" fill="#102B40"/>
+  </g>
+  <g id="spindle">
+    <rect x="445" y="500" width="50" height="70" rx="8" fill="#22384C"/>
+    <rect x="458" y="570" width="24" height="30" fill="#31485C"/>
+    <path d="M470 600 L462 625 L478 625 Z" fill="#FFD34D"/>
+  </g>
+  <g id="worktable"><rect x="330" y="610" width="220" height="26" rx="6" fill="#3E5A70"/></g>
+  <g id="control-panel">
+    <path d="M700 560 L780 575 L780 700 L700 690 Z" fill="#22384C"/>
+    <rect x="705" y="585" width="65" height="45" rx="8" fill="#22C5DC" opacity="0.9"/>
+    <circle cx="722" cy="655" r="9" fill="#7C93A6"/>
+    <circle cx="748" cy="655" r="9" fill="#7C93A6"/>
+    <circle cx="735" cy="685" r="12" fill="#E64A19"/>
+  </g>
+  <g id="flames-front">
+    <path d="M420 440 C390 360 440 310 420 210 C480 290 500 360 490 440 Z" fill="url(#flameOuter)"/>
+    <path d="M445 440 C430 370 465 330 450 250 C495 310 505 380 495 440 Z" fill="url(#flameMid)"/>
+    <path d="M465 440 C455 390 480 360 470 300 C505 350 510 400 500 440 Z" fill="#FFD34D"/>
+    <path d="M560 440 C590 370 550 320 575 230 C530 300 515 370 525 440 Z" fill="url(#flameOuter)"/>
+    <path d="M580 440 C595 380 565 345 580 275 C540 330 530 390 540 440 Z" fill="url(#flameMid)"/>
+    <path d="M560 440 C570 395 550 365 560 315 C590 360 595 405 585 440 Z" fill="#FFD34D"/>
+  </g>
+  <g id="highlights">
+    <circle cx="430" cy="200" r="8" fill="#FFF0AD"/>
+    <circle cx="600" cy="240" r="6" fill="#FFF0AD"/>
+    <circle cx="520" cy="170" r="7" fill="#FFF0AD"/>
+    <path d="M240 435 L640 435" stroke="#FF9A3D" stroke-width="8" opacity="0.5"/>
+    <path d="M680 445 L830 470" stroke="#FF9A3D" stroke-width="6" opacity="0.35"/>
+  </g>
+</svg>
