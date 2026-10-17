@@ -1,0 +1,75 @@
+name: Aggiorna logo e icone Registro CDL
+on:
+  push:
+    branches: [main]
+    paths: ['assets/registro-logo.base64', '.github/workflows/registro-logo.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+concurrency:
+  group: registro-logo
+  cancel-in-progress: false
+jobs:
+  graphics:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install Pillow==12.0.0
+      - name: Aggiorna esclusivamente logo e icone
+        run: |
+          python - <<'PY'
+          import base64,io,json,re,subprocess
+          from pathlib import Path
+          from PIL import Image
+          source=Path('index.html').read_text(encoding='utf-8')
+          text=source
+          photo=Image.open(io.BytesIO(base64.b64decode(Path('assets/registro-logo.base64').read_text().strip(),validate=True))).convert('RGB')
+          folder=Path('icons');folder.mkdir(exist_ok=True)
+          for size,name in [(180,'apple-touch-icon-cnc.png'),(192,'icon-cnc-192.png'),(512,'icon-cnc-512.png')]:
+              dest=folder/name
+              photo.resize((size,size),Image.Resampling.LANCZOS).save(dest,'PNG',optimize=True)
+              with Image.open(dest) as check:
+                  assert check.format=='PNG' and check.size==(size,size)
+                  check.verify()
+          tiny=io.BytesIO();photo.resize((64,64),Image.Resampling.LANCZOS).save(tiny,'PNG')
+          svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><image width="64" height="64" href="data:image/png;base64,'+base64.b64encode(tiny.getvalue()).decode()+'"/></svg>'
+          (folder/'icon-cnc.svg').write_text(svg,encoding='utf-8')
+          old='<link rel="icon" type="image/svg+xml" href="icons/icon.svg">'
+          new='<link rel="icon" type="image/svg+xml" href="icons/icon-cnc.svg">'
+          assert text.count(old)==1 or text.count(new)==1
+          text=text.replace(old,new,1)
+          old='<link rel="apple-touch-icon" href="icons/icon.svg">'
+          new='<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon-cnc.png">'
+          assert text.count(old)==1 or text.count(new)==1
+          text=text.replace(old,new,1)
+          logo='<img id="registro-logo" src="icons/icon-cnc-192.png" alt="Logo Registro turno: centro CNC con fiamme" width="112" height="112" style="display:block;object-fit:contain;border-radius:22px;margin-bottom:12px">'
+          if 'id="registro-logo"' not in text:
+              assert text.count('<header><h1>Registro turno Centri Di Lavoro</h1>')==1
+              text=text.replace('<header><h1>Registro turno Centri Di Lavoro</h1>','<header>'+logo+'<h1>Registro turno Centri Di Lavoro</h1>',1)
+          scripts=lambda s:re.findall(r'<script>(.*?)</script>',s,re.S)
+          assert scripts(source)==scripts(text),'JavaScript modificato: operazione bloccata'
+          for code in scripts(text):
+              subprocess.run(['node','--check'],input=code,text=True,check=True)
+          Path('index.html').write_text(text,encoding='utf-8')
+          manifest=Path('manifest.webmanifest')
+          data=json.loads(manifest.read_text(encoding='utf-8'))
+          data['icons']=[{'src':'icons/icon-cnc-192.png','sizes':'192x192','type':'image/png','purpose':'any'},{'src':'icons/icon-cnc-512.png','sizes':'512x512','type':'image/png','purpose':'any'}]
+          manifest.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          PY
+      - name: Salva soltanto i file grafici e i relativi riferimenti
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html manifest.webmanifest icons/icon-cnc.svg icons/apple-touch-icon-cnc.png icons/icon-cnc-192.png icons/icon-cnc-512.png
+          if ! git diff --cached --quiet; then
+            git commit -m 'style: logo CNC e icone PNG Registro turno'
+            git push origin HEAD:main
+          fi
+      - name: Richiedi ricostruzione GitHub Pages del ramo main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST repos/${{ github.repository }}/pages/builds
