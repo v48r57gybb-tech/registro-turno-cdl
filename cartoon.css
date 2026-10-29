@@ -20,3 +20,6 @@ body:not(.cnc-cartoon) #checks .check{display:flex;align-items:center;gap:12px;p
 @media(max-width:380px){body.cnc-cartoon #editor .card{padding-left:12px;padding-right:12px}.cnc-bubble{padding:10px}.cnc-hero-copy small{font-size:11px}body.cnc-cartoon #checks .check::after{font-size:16px}body:not(.cnc-cartoon) #cnc-sober-photo{gap:10px}body:not(.cnc-cartoon) #cnc-sober-photo::after{font-size:11px}}
 }
 @media print{.theme-controls,.cnc-hero,.cnc-sticker,header::after{display:none!important}}
+/* Nessuna indicazione di versione visibile nell intestazione. */
+header>p.muted{display:none!important}
+@media screen{header::after{content:'REGISTRO TECNICO'}body.cnc-cartoon header::after{content:'OFFICINA A FUMETTI'}}
