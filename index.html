@@ -58,4 +58,4 @@ $('print').onclick=()=>{if(current)window.print();};$('reset').onclick=()=>{if(c
 $('backup').onclick=()=>{if(!$('editor').hidden)capture();download(JSON.stringify({version:5,active,data},null,2),'application/json','Backup-registro-'+today()+'.json');};$('restore').onclick=()=>$('restorefile').click();
 $('restorefile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{if(importing){status('Attendi il caricamento delle foto prima di importare un backup.');return;}if(f.size>25000000)throw Error();const s=JSON.parse(await f.text());if(!valid(s))throw Error();if(confirm('Sostituire entrambe le bozze locali con questo backup?')){data=s.data;active=['FR01','FR03'].includes(s.active)?s.active:'FR01';$('macchina').value=active;load();store();current=null;$('preview').hidden=true;$('editor').hidden=false;}}catch(e){status('Backup non valido o troppo grande: nessuna modifica effettuata.');}finally{e.target.value='';}};
 window.addEventListener('pagehide',()=>{if(!$('editor').hidden)capture();});
-</script></body></html>
+</script><link rel="stylesheet" href="cartoon.css?v=1"><script src="cartoon.js?v=1"></script></body></html>
