@@ -23,3 +23,6 @@ body:not(.cnc-cartoon) #checks .check{display:flex;align-items:center;gap:12px;p
 /* Nessuna indicazione di versione visibile nell intestazione. */
 header>p.muted{display:none!important}
 @media screen{header::after{content:'REGISTRO TECNICO'}body.cnc-cartoon header::after{content:'OFFICINA A FUMETTI'}}
+/* Intestazione visiva Cartoon; titolo Tecnica e report invariati. */
+body.cnc-cartoon header .cnc-sticker{display:none!important}
+@media screen{body.cnc-cartoon header h1{font-size:0;line-height:0}body.cnc-cartoon header h1::before{content:'Registro sopravvivenza ai Centri Di Lavoro';display:block;font-size:clamp(27px,6vw,36px);line-height:1.1;overflow-wrap:break-word}}
