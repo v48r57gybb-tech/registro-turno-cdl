@@ -26,3 +26,36 @@ header>p.muted{display:none!important}
 /* Intestazione visiva Cartoon; titolo Tecnica e report invariati. */
 body.cnc-cartoon header .cnc-sticker{display:none!important}
 @media screen{body.cnc-cartoon header h1{font-size:0;line-height:0}body.cnc-cartoon header h1::before{content:'Registro sopravvivenza ai Centri Di Lavoro';display:block;font-size:clamp(27px,6vw,36px);line-height:1.1;overflow-wrap:break-word}}
+/* Tecnica: fumetto tecnico ad alto contrasto. Solo schermo, escluso report. */
+@media screen{
+body:not(.cnc-cartoon){background:#e4eaf0;color:#101820}
+body:not(.cnc-cartoon) header{border-bottom:3px solid #17212b;padding-bottom:18px}
+body:not(.cnc-cartoon) header h1{color:#101820;font:800 clamp(25px,4.5vw,32px)/1.2 Arial,sans-serif;letter-spacing:-.02em}
+body:not(.cnc-cartoon) header>p:not(.muted){color:#1d2a35;font-weight:700}
+body:not(.cnc-cartoon) header::after{color:#101820;background:#e0edf5;border:2px solid #17212b;border-radius:7px;font-size:13px;font-weight:800;box-shadow:2px 2px 0 #17212b;padding:8px 12px}
+body:not(.cnc-cartoon) #intro{background:#fff;border:2px solid #17212b;border-left:6px solid #174d70;border-radius:8px;color:#17212b;font-size:14px;line-height:1.5}
+body:not(.cnc-cartoon) #editor .card{border:3px solid #17212b;border-radius:12px;box-shadow:4px 4px 0 #17212b;padding:20px 18px;margin:20px 0;color:#101820}
+body:not(.cnc-cartoon) #editor label:not(.check){font-size:17px;font-weight:800;line-height:1.4;color:#101820;margin:4px 0 12px}
+body:not(.cnc-cartoon) #editor .card>h2{color:#101820;font-size:20px;font-weight:800;border-bottom:2px solid #17212b;padding-bottom:12px}
+body:not(.cnc-cartoon) #editor input:not([type=checkbox]),body:not(.cnc-cartoon) #editor select,body:not(.cnc-cartoon) #editor textarea{border:2px solid #17212b;border-radius:7px;background:#fff;color:#101820;font:600 17px/1.5 Arial,sans-serif;padding:13px 12px;box-shadow:inset 0 2px 0 #17212b0a;min-height:52px}
+body:not(.cnc-cartoon) #editor input[type=date]{padding:13px 8px;min-inline-size:0;max-inline-size:100%}
+body:not(.cnc-cartoon) #editor textarea{min-height:130px;font-weight:500}
+body:not(.cnc-cartoon) #editor input::placeholder,body:not(.cnc-cartoon) #editor textarea::placeholder{color:#465462;opacity:1;font-weight:400}
+body:not(.cnc-cartoon) #editor .muted{font-size:14px;line-height:1.5;color:#303e4b}
+body:not(.cnc-cartoon) #editor input:focus-visible,body:not(.cnc-cartoon) #editor select:focus-visible,body:not(.cnc-cartoon) #editor textarea:focus-visible{outline:3px solid #176b9b;outline-offset:3px}
+body:not(.cnc-cartoon) #editor>.card:has(>label[for=macchina])::before,body:not(.cnc-cartoon) #fields>.card:has(>#codice)::before,body:not(.cnc-cartoon) #fields>.card:has(>#risolti)::before,body:not(.cnc-cartoon) #editor>.card:has(>#checks)::before{background:#e0edf5;border:2px solid #17212b;border-radius:6px;color:#101820;font-size:13px;line-height:1.45;font-weight:800;letter-spacing:.04em;padding:9px 12px;margin:0 0 16px}
+body:not(.cnc-cartoon) #cnc-sober-photo{border:3px solid #17212b!important;border-radius:12px!important;box-shadow:4px 4px 0 #17212b;padding:18px!important;margin:20px 0 26px!important;gap:18px}
+body:not(.cnc-cartoon) #cnc-sober-photo img{width:40%!important;max-width:210px!important;object-fit:contain}
+body:not(.cnc-cartoon) #cnc-sober-photo::after{color:#101820;font-size:17px;font-weight:800;line-height:1.5;max-width:250px}
+body:not(.cnc-cartoon) #checks .check{border:2px solid #17212b;border-radius:8px;background:#f4f8fb;padding:14px 12px;margin:12px 0;font-size:17px;font-weight:600;color:#101820}
+body:not(.cnc-cartoon) #checks .check:has(input:checked){background:#e0edf5;box-shadow:inset 5px 0 0 #174d70}
+body:not(.cnc-cartoon) #checks input{accent-color:#174d70}
+body:not(.cnc-cartoon) #editor button,body:not(.cnc-cartoon) .theme-controls button{border:2px solid #17212b;border-radius:8px;box-shadow:3px 3px 0 #17212b;font:700 16px/1.4 Arial,sans-serif;background:#e0edf5;color:#101820;min-height:50px}
+body:not(.cnc-cartoon) #editor #generate{background:#174d70;border-color:#17212b;color:#fff;font-weight:800}
+body:not(.cnc-cartoon) #editor #camera{background:#e0edf5;color:#101820}
+body:not(.cnc-cartoon) #editor #reset{background:#fff;color:#101820}
+body:not(.cnc-cartoon) #editor .card.buttons{border-top:3px solid #17212b}
+body:not(.cnc-cartoon) #editor button:active,body:not(.cnc-cartoon) .theme-controls button:active{transform:translate(1px,1px);box-shadow:1px 1px 0 #17212b}
+body:not(.cnc-cartoon) #editor button:focus-visible{outline:3px solid #176b9b;outline-offset:4px}
+@media(max-width:480px){body:not(.cnc-cartoon) #editor .card{padding:18px 12px;box-shadow:3px 3px 0 #17212b}body:not(.cnc-cartoon) #cnc-sober-photo{padding:12px!important;gap:12px}body:not(.cnc-cartoon) #cnc-sober-photo::after{font-size:15px}body:not(.cnc-cartoon) #editor label:not(.check){font-size:16px}}
+}
