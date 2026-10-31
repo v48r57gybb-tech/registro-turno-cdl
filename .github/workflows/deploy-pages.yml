@@ -63,6 +63,28 @@ jobs:
           text=text.replace('href="manifest.webmanifest"','href="manifest.webmanifest?v='+version+'"')
           path.write_text(text,encoding='utf-8')
           PY
+      - name: Correggi la chiusura HTML nel generatore senza toccare il report
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path=Path('scripts/build-cartoon-trial.py')
+          code=path.read_text(encoding='utf-8')
+          old="assert source.count('</body>')==1"
+          new="assert source.rfind('</body>') > source.rfind('</script>')"
+          assert code.count(old)==1
+          code=code.replace(old,new,1)
+          prefix="trial=trial.replace('</body>',"
+          lines=code.splitlines()
+          matches=[i for i,line in enumerate(lines) if line.startswith(prefix)]
+          assert len(matches)==1
+          i=matches[0]
+          line=lines[i]
+          assert line.endswith(',1)')
+          lines[i]="head,tail=trial.rsplit('</body>',1)\ntrial=head+"+line[len(prefix):].removesuffix(',1)')+"+tail"
+          corrected='\n'.join(lines)+'\n'
+          compile(corrected,str(path),'exec')
+          path.write_text(corrected,encoding='utf-8')
+          PY
       - name: Genera la prova Cartoon separata e verifica le raccolte
         run: |
           node --check cartoon-trial.js
@@ -72,23 +94,28 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-          import hashlib,json
+          import hashlib,json,re
           audit=json.loads(Path('cartoon-trial-audit.json').read_text(encoding='utf-8'))
           assert audit['main']==1000 and audit['coffee']==100
           assert audit['originali_conservate']==100
           assert audit['main_unique_normalized']==1000 and audit['coffee_unique_normalized']==100
           path=Path('index.html')
           source=path.read_text(encoding='utf-8')
-          assert source.count('</body>')==1
+          assert re.search(r'</body>\s*</html>\s*$',source)
+          assert source.rfind('</body>') > source.rfind('</script>')
           assert source.count("KEY='registro-cdl-v5'")==1
           assert source.count("'registro-cdl-mode'")==1
           assert 'data-cnc-trial-main' not in source
           version=hashlib.sha256(Path('cartoon-trial-data.js').read_bytes()+Path('cartoon-trial.js').read_bytes()).hexdigest()[:12]
           scripts=f'<script data-cnc-trial-main src="cartoon-trial-data.js?v={version}"></script><script data-cnc-trial-main src="cartoon-trial.js?v={version}"></script>'
-          text=source.replace('</body>',scripts+'</body>',1)
+          head,tail=source.rsplit('</body>',1)
+          text=head+scripts+'</body>'+tail
           assert text.replace(scripts,'',1)==source
+          before=re.findall(r'<script\b[^>]*>(.*?)</script>',source,re.S)
+          after=re.findall(r'<script\b[^>]*>(.*?)</script>',text,re.S)
+          assert after[:len(before)]==before
           path.write_text(text,encoding='utf-8')
-          Path('cartoon-trial-main-status.json').write_text(json.dumps({'enabled_on_main':True,'version':version,'backup_branch':'backup-prima-prova-cartoon','baseline_commit':'bed57a2b64076527e680b6b69c50b813ee4986f8','draft_key_unchanged':True,'mode_key_unchanged':True},indent=2)+'\n',encoding='utf-8')
+          Path('cartoon-trial-main-status.json').write_text(json.dumps({'enabled_on_main':True,'version':version,'backup_branch':'backup-prima-prova-cartoon','baseline_commit':'bed57a2b64076527e680b6b69c50b813ee4986f8','draft_key_unchanged':True,'mode_key_unchanged':True,'report_template_unchanged':True},indent=2)+'\n',encoding='utf-8')
           PY
       - name: Configura GitHub Pages
         uses: actions/configure-pages@v5
