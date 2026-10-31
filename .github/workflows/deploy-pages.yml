@@ -68,6 +68,28 @@ jobs:
           node --check cartoon-trial.js
           python scripts/build-cartoon-trial.py
           node --check cartoon-trial-data.js
+      - name: Attiva il modulo Cartoon anche nell app principale senza cambiare le bozze
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          audit=json.loads(Path('cartoon-trial-audit.json').read_text(encoding='utf-8'))
+          assert audit['main']==1000 and audit['coffee']==100
+          assert audit['originali_conservate']==100
+          assert audit['main_unique_normalized']==1000 and audit['coffee_unique_normalized']==100
+          path=Path('index.html')
+          source=path.read_text(encoding='utf-8')
+          assert source.count('</body>')==1
+          assert source.count("KEY='registro-cdl-v5'")==1
+          assert source.count("'registro-cdl-mode'")==1
+          assert 'data-cnc-trial-main' not in source
+          version=hashlib.sha256(Path('cartoon-trial-data.js').read_bytes()+Path('cartoon-trial.js').read_bytes()).hexdigest()[:12]
+          scripts=f'<script data-cnc-trial-main src="cartoon-trial-data.js?v={version}"></script><script data-cnc-trial-main src="cartoon-trial.js?v={version}"></script>'
+          text=source.replace('</body>',scripts+'</body>',1)
+          assert text.replace(scripts,'',1)==source
+          path.write_text(text,encoding='utf-8')
+          Path('cartoon-trial-main-status.json').write_text(json.dumps({'enabled_on_main':True,'version':version,'backup_branch':'backup-prima-prova-cartoon','baseline_commit':'bed57a2b64076527e680b6b69c50b813ee4986f8','draft_key_unchanged':True,'mode_key_unchanged':True},indent=2)+'\n',encoding='utf-8')
+          PY
       - name: Configura GitHub Pages
         uses: actions/configure-pages@v5
       - name: Prepara i file del sito
