@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  workflow_run:
+    workflows: ['Aggiorna logo e icone Registro CDL']
+    types: [completed]
+    branches: [main]
 
 permissions:
   contents: read
@@ -16,10 +20,49 @@ concurrency:
 
 jobs:
   build:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
-      - name: Scarica il repository
+      - name: Scarica il repository aggiornato
         uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Verifica icone e versiona i riferimenti nel sito pubblicato
+        run: |
+          python - <<'PY'
+          import hashlib,json,re,struct
+          from pathlib import Path
+          names={'apple-touch-icon-cnc.png':180,'icon-cnc-192.png':192,'icon-cnc-512.png':512}
+          versions={}
+          for name,size in names.items():
+              raw=(Path('icons')/name).read_bytes()
+              assert raw[:8]==b'\x89PNG\r\n\x1a\n',name
+              assert struct.unpack('>II',raw[16:24])==(size,size),name
+              versions[name]=hashlib.sha256(raw).hexdigest()[:12]
+          raw=Path('icons/icon-cnc.svg').read_bytes()
+          assert b'<svg' in raw
+          versions['icon-cnc.svg']=hashlib.sha256(raw).hexdigest()[:12]
+          path=Path('index.html')
+          source=path.read_text(encoding='utf-8')
+          text=source
+          for name,version in versions.items():
+              for attr in ['src','href']:
+                  text=text.replace(attr+'="icons/'+name+'"',attr+'="icons/'+name+'?v='+version+'"')
+          text=text.replace('alt="Logo Registro turno: centro CNC con fiamme"','alt="Logo Registro turno: centro di lavoro CNC realistico"')
+          scripts=lambda s:re.findall(r'<script\b[^>]*>(.*?)</script>',s,re.S)
+          assert scripts(source)==scripts(text),'JavaScript modificato: pubblicazione bloccata'
+          manifest=Path('manifest.webmanifest')
+          data=json.loads(manifest.read_text(encoding='utf-8'))
+          for icon in data['icons']:
+              base=icon['src'].split('?')[0]
+              name=Path(base).name
+              if name in versions:
+                  icon['src']=base+'?v='+versions[name]
+          manifest.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          version=hashlib.sha256(manifest.read_bytes()).hexdigest()[:12]
+          text=text.replace('href="manifest.webmanifest"','href="manifest.webmanifest?v='+version+'"')
+          path.write_text(text,encoding='utf-8')
+          PY
       - name: Configura GitHub Pages
         uses: actions/configure-pages@v5
       - name: Prepara i file del sito
