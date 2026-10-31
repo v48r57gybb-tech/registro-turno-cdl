@@ -63,6 +63,11 @@ jobs:
           text=text.replace('href="manifest.webmanifest"','href="manifest.webmanifest?v='+version+'"')
           path.write_text(text,encoding='utf-8')
           PY
+      - name: Genera la prova Cartoon separata e verifica le raccolte
+        run: |
+          node --check cartoon-trial.js
+          python scripts/build-cartoon-trial.py
+          node --check cartoon-trial-data.js
       - name: Configura GitHub Pages
         uses: actions/configure-pages@v5
       - name: Prepara i file del sito
