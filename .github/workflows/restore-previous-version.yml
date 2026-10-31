@@ -1,0 +1,46 @@
+name: Ripristina versione precedente
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scarica il repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+      - name: Ripristina main al backup senza ampliamento battute
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B main bed57a2b64076527e680b6b69c50b813ee4986f8
+          git push --force origin main
+      - name: Configura GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Prepara i file del sito
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    needs: restore
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Pubblica su GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
