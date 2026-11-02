@@ -1,0 +1,44 @@
+name: Applica ritorno all'inizio dopo Nuova compilazione
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: applica-ritorno-inizio
+  cancel-in-progress: true
+
+jobs:
+  patch:
+    if: github.event.head_commit.message != 'chore: torna all'inizio dopo nuova compilazione'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scarica il repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Aggiungi lo scorrimento all'inizio dopo Nuova compilazione
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path=Path('index.html')
+          source=path.read_text(encoding='utf-8')
+          old="$('reset').onclick=()=>{if(confirm('Svuotare solo '+active+', incluse le foto? Salva prima una copia se serve.')){data[active]={};load();capture();}};"
+          new="$('reset').onclick=()=>{if(confirm('Svuotare solo '+active+', incluse le foto? Salva prima una copia se serve.')){data[active]={};load();capture();window.scrollTo({top:0,behavior:'smooth'});}};"
+          assert source.count(old)==1
+          text=source.replace(old,new,1)
+          assert text.count(new)==1
+          assert text.count("window.scrollTo({top:0,behavior:'smooth'})")==1
+          path.write_text(text,encoding='utf-8')
+          PY
+      - name: Committa la modifica
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet && echo 'Nessuna modifica necessaria' && exit 0
+          git commit -m "chore: torna all'inizio dopo nuova compilazione"
+          git push origin main
