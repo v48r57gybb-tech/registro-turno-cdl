@@ -1,55 +1,14 @@
 name: Applica salvataggio PDF con nome macchina-operatore-data
 
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 permissions:
-  contents: write
-
-concurrency:
-  group: applica-salvataggio-pdf
-  cancel-in-progress: true
+  contents: read
 
 jobs:
   patch:
-    if: github.event.head_commit.message != 'chore: salva PDF con nome macchina-operatore-data'
     runs-on: ubuntu-latest
     steps:
-      - name: Scarica il repository
-        uses: actions/checkout@v4
-        with:
-          ref: main
-      - name: Sostituisci Stampa / PDF con Salva PDF
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          path=Path('index.html')
-          source=path.read_text(encoding='utf-8')
-          old_button='<button id="print">Stampa / PDF</button>'
-          new_button='<button id="print">Salva PDF</button>'
-          assert source.count(old_button)==1
-          text=source.replace(old_button,new_button,1)
-          old_handler="$('print').onclick=()=>{if(current)window.print();};"
-          new_handler=("$('print').onclick=()=>{if(!current)return;"
-                       "const d=data[active];"
-                       "const pdfName=[active,d.operatore||'Operatore',d.data||today()]"
-                       ".map(v=>String(v).replace(/[^\\w.-]+/g,'-')).join('-');"
-                       "const oldTitle=document.title;"
-                       "document.title=pdfName;"
-                       "window.print();"
-                       "setTimeout(()=>{document.title=oldTitle;},1000);};")
-          assert text.count(old_handler)==1
-          text=text.replace(old_handler,new_handler,1)
-          assert text.count(new_button)==1
-          assert text.count('Salva PDF')==1
-          path.write_text(text,encoding='utf-8')
-          PY
-      - name: Committa la modifica
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html
-          git diff --cached --quiet && echo 'Nessuna modifica necessaria' && exit 0
-          git commit -m "chore: salva PDF con nome macchina-operatore-data"
-          git push origin main
+      - name: Modifica gestita dalla pubblicazione GitHub Pages
+        run: echo "La modifica viene applicata durante la pubblicazione."
